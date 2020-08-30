@@ -9,11 +9,13 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
+const Employee = require("./lib/Employee");
 
+const employees = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-function promptUser() {
+function employeeQuestions() {
     return inquirer.prompt([
         {
             type: "input",
@@ -21,19 +23,9 @@ function promptUser() {
             message: "What is the name of the employee?"
         },
         {
-            type: "list",
-            name: "role",
-            message: "Is the employee an Engineer, Manager or Intern?",
-            choices: [
-                "Engineer",
-                "Manager",
-                "Intern"
-            ]
-        },
-        {
             type: "input",
-            name: "officeNum",
-            message: "If he/she is a manager, what is the office number?"
+            name: "id",
+            message: "What is the employee id?"
         },
         {
             type: "input",
@@ -42,22 +34,64 @@ function promptUser() {
         },
         {
             type: "input",
+            name: "officeNumber",
+            message: "If he/she is a manager, what is the office number?"
+        }
+    ]).then(function (answers) {
+
+    
+    }).then(function anotherEntry() {
+    console.log("Would you like to add another employee?");
+    employeeQuestions();
+    })
+}
+
+function engineerQuestion() {
+    return inquirer.prompt([
+        {
+            type: "input",
             name: "github",
             message: "What is the employee's github username?"
-        },
+        }
+    ])
+}
+
+function internQuestion() {
+    return inquirer.prompt([
         {
             type: "input",
             name: "school",
             message: "What is the name of the intern's school?"
         }
-    ]);
+    ])
 }
+
+function managerQuestion() {
+    return inquirer.prompt([
+        {
+            type: "list",
+            message: "Is the employee an Engineer, Manager or Intern?",
+            name: "role",
+            choices: [
+                "Engineer",
+                "Manager",
+                "Intern"
+            ]
+        }     
+    ])
+}
+
+employeeQuestions();
+render(Employee);
+
+
+
+
+
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
-render();
-
-
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
 // `output` folder. You can use the variable `outputPath` above target this location.
