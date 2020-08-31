@@ -15,80 +15,133 @@ const employees = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-function employeeQuestions() {
+function roleQuestion() {
     return inquirer.prompt([
         {
-            type: "input",
-            name: "name",
-            message: "What is the name of the employee?"
-        },
-        {
-            type: "input",
-            name: "id",
-            message: "What is the employee id?"
-        },
-        {
-            type: "input",
-            name: "email",
-            message: "What is the employee's email address?"
-        },
-        {
-            type: "input",
-            name: "officeNumber",
-            message: "If he/she is a manager, what is the office number?"
+            type: "list",
+            message: "Do you want to add an Engineer, a Manager or an Intern?",
+            name: "role",
+            choices: ["Engineer", "Manager", "Intern", "I don't want to add anymore"],
         }
-    ]).then(function (answers) {
+    ]).then( function (answers) {
+        switch (answers.role) {
+            case "Engineer": engineerQuestion();
+            break;
+            
+            case "Manager": managerQuestion();
+            break;
 
-    
-    }).then(function anotherEntry() {
-    console.log("Would you like to add another employee?");
-    employeeQuestions();
-    })
-}
+            case "Intern": internQuestion();
+            break;
+
+            case "I don't want to add anymore": console.log("You are all set!");
+            fs.writeFile(outputPath, render(employees), "utf-8", (err) => {
+                if (err) throw err;
+                console.log(err);
+        });
+    }
+    }
+)}
 
 function engineerQuestion() {
-    return inquirer.prompt([
-        {
-            type: "input",
-            name: "github",
-            message: "What is the employee's github username?"
-        }
-    ])
+    return inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "What is the name of the Engineer?",
+            },
+            {
+                type: "input",
+                name: "id",
+                message: "What is the Engineer's id?",
+            },
+            {
+                type: "input",
+                name: "email",
+                message: "What is the Engineer's email address?",
+            },
+            {
+                type: "input",
+                name: "github",
+                message: "What is the Engineer's github username?",
+            }
+        ])
+        .then(function (answers) {
+            const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
+            employees.push(engineer);
+        })
+        .then(function anotherEntry() {
+            console.log("Would you like to add another employee?");
+            roleQuestion();
+        });
 }
 
 function internQuestion() {
     return inquirer.prompt([
         {
             type: "input",
+            name: "name",
+            message: "What is the name of the Intern?",
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the Intern's id?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the Intern's email address?",
+        },
+        {
+            type: "input",
             name: "school",
-            message: "What is the name of the intern's school?"
+            message: "What is the name of the intern's school?",
         }
-    ])
+    ]).then((answers) => {
+        const intern = new Intern(answers.name, answers.id, answers.email, answers.school);
+        employees.push(intern);
+
+    }).then(function anotherEntry() {
+        console.log("Would you like to add another employee?");
+        roleQuestion();
+    });
 }
 
 function managerQuestion() {
     return inquirer.prompt([
         {
-            type: "list",
-            message: "Is the employee an Engineer, Manager or Intern?",
-            name: "role",
-            choices: [
-                "Engineer",
-                "Manager",
-                "Intern"
-            ]
-        }     
-    ])
+            type: "input",
+            name: "name",
+            message: "What is the name of the Manager?",
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "What is the Manager's id?",
+        },
+        {
+            type: "input",
+            name: "email",
+            message: "What is the Manager's email address?",
+        },
+        {
+            type: "input",
+            name: "officeNumber",
+            message: "What is the Manager's office number?",
+        }
+    ]).then((answers) => {
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
+        employees.push(manager);
+
+    }).then(function anotherEntry() {
+        console.log("Would you like to add another employee?");
+        roleQuestion();
+    });
 }
 
-employeeQuestions();
-render(Employee);
-
-
-
-
-
-
+roleQuestion();
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
@@ -97,8 +150,6 @@ render(Employee);
 // `output` folder. You can use the variable `outputPath` above target this location.
 // Hint: you may need to check if the `output` folder exists and create it if it
 // does not.
-
-
 
 // HINT: each employee type (manager, engineer, or intern) has slightly different
 // information; write your code to ask different questions via inquirer depending on
