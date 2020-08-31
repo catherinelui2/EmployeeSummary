@@ -10,6 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 const Employee = require("./lib/Employee");
+const { parse } = require("path");
 
 const employees = [];
 
@@ -53,14 +54,14 @@ function engineerQuestion() {
     return inquirer
         .prompt([
             {
-            type: "input",
-            name: "name",
-            message: "What is the name of the Engineer?",
-            validate: (answer) => {
-                if (answer !== "") {
-                    return true;
-                }
-                return "Please enter at least one character.";
+                type: "input",
+                name: "name",
+                message: "What is the name of the Engineer?",
+                validate: (answer) => {
+                    if (answer !== "") {
+                        return true;
+                    }
+                    return "Please enter at least one character.";
             }
             },
             {
@@ -68,8 +69,8 @@ function engineerQuestion() {
                 name: "id",
                 message: "What is the Engineer's id?",
                 validate: (answer) => {
-                    const idCheck = answer.match(/^\d+$/);
-                    if (idCheck) {
+                    const answerInt = parseInt(answer);
+                    if (!isNaN(answerInt)) {
                         return true;
                     }
                     return "Please enter a number.";
@@ -97,7 +98,7 @@ function engineerQuestion() {
                     }
                     return "Please enter at least one character.";
                 }
-            },
+            }
         ])
         .then(function (answers) {
             const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github);
@@ -157,7 +158,7 @@ function internQuestion() {
                     }
                     return "Please enter at least one character.";
                 }
-            },
+            }
         ])
         .then((answers) => {
             const intern = new Intern(answers.name, answers.id, answers.email, answers.school);
@@ -218,7 +219,7 @@ function managerQuestion() {
                     }
                     return "Please enter a number.";
                 }
-            },
+            }
         ])
         .then((answers) => {
             const manager = new Manager(answers.name, answers.id, answers.email, answers.officeNumber);
